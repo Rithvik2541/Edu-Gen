@@ -166,7 +166,7 @@ const LearningPage = () => {
             <div className="space-card">
               <div className="space-icon">🎯</div>
               <div className="space-info">
-                <h3>Spam's Space</h3>
+                <h3>Your personal Space</h3>
                 <p>0 contents</p>
               </div>
             </div>
