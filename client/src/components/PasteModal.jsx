@@ -34,7 +34,7 @@ const PasteModal = ({ onClose, onSubmit }) => {
 
         <div className="modal-content">
           <p className="modal-description">
-            Enter a YouTube Link / Playlist, Website URL, Doc, ArXiv, Etc
+            Enter a YouTube Link
           </p>
           
           <input
