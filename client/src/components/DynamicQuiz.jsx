@@ -20,8 +20,8 @@ const DynamicQuiz = ({ videoUrl, onClose }) => {
     setError(null);
     
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/generate/', {
-        method: 'POST',
+      const response = await fetch('http://127.0.0.1:8000/api/generatequiz', {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -29,7 +29,7 @@ const DynamicQuiz = ({ videoUrl, onClose }) => {
           video_url: videoUrl,
           content_type: 'quiz',
           difficulty: 'Intermediate'
-        }),
+        })
       });
 
       if (!response.ok) {
@@ -42,15 +42,27 @@ const DynamicQuiz = ({ videoUrl, onClose }) => {
       // Transform the data to match the expected format
       const transformedQuizData = data.questions.map((question, index) => ({
         questionId: index + 1,
-        questionText: question.questionText,
+        questionText: question.question,
         options: question.options,
-        correctAnswer: question.correctAnswer,
+        correctAnswer: question.correct_answer,
         explanation: question.explanation
       }));
 
+      // Validate the transformed data
+      const validQuestions = transformedQuizData.filter(q => 
+        q.questionText && 
+        q.options && 
+        Object.keys(q.options).length > 0 &&
+        q.correctAnswer
+      );
+      
+      if (validQuestions.length === 0) {
+        throw new Error('No valid questions found in the response');
+      }
+      
       setQuizData({
-        title: data.title,
-        questions: transformedQuizData
+        title: data.title || 'Quiz',
+        questions: validQuestions
       });
     } catch (err) {
       console.error('Error generating quiz:', err);
@@ -148,7 +160,7 @@ const DynamicQuiz = ({ videoUrl, onClose }) => {
   };
 
   const isCorrect = selectedOption === currentQuestion.correctAnswer;
-
+  
   return (
     <div className="quiz-overlay">
       <div className="quiz-container">
@@ -165,16 +177,20 @@ const DynamicQuiz = ({ videoUrl, onClose }) => {
         </h3>
         
         <div className="options-container">
-          {Object.entries(currentQuestion.options).map(([key, value]) => (
-            <div
-              key={key}
-              className={getOptionClass(key)}
-              onClick={() => handleOptionSelect(key)}
-            >
-              <span className="option-label">{key}.</span>
-              <span className="option-text">{value}</span>
-            </div>
-          ))}
+          {currentQuestion.options && typeof currentQuestion.options === 'object' ? (
+            Object.entries(currentQuestion.options).map(([key, value]) => (
+              <div
+                key={key}
+                className={getOptionClass(key)}
+                onClick={() => handleOptionSelect(value)}
+              >
+                <span className="option-label">{key}.</span>
+                <span className="option-text">{value}</span>
+              </div>
+            ))
+          ) : (
+            <div className="error-message">No options available</div>
+          )}
         </div>
         
         {showExplanation && (

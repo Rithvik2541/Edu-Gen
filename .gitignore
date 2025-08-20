@@ -40,3 +40,8 @@ Thumbs.db
 
 # Misc
 *.pid
+
+/venv
+/backend/venv
+/backend/.env
+/backend/.env_example.txt
