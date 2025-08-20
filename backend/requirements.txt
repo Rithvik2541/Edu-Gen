@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+langchain-google-genai
+youtube-transcript-api
+langchain
+pydantic_settings
+requests
