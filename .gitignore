@@ -41,7 +41,20 @@ Thumbs.db
 # Misc
 *.pid
 
+# Python virtual environments
 /venv
 /backend/venv
+venv/
+env/
+.venv/
+.env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Backend environment files
 /backend/.env
 /backend/.env_example.txt
