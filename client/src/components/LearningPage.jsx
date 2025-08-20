@@ -1,10 +1,13 @@
 import React, { useState, useRef } from 'react';
 import PasteModal from './PasteModal';
+import DynamicQuiz from './DynamicQuiz';
 import './LearningPage.css';
 
 const LearningPage = () => {
   const [showFileTooltip, setShowFileTooltip] = useState(false);
   const [showPasteModal, setShowPasteModal] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState('');
   const [learningText, setLearningText] = useState('');
   const fileInputRef = useRef(null);
   const videoInputRef = useRef(null);
@@ -44,7 +47,18 @@ const LearningPage = () => {
   const handleModalSubmit = (url, text) => {
     console.log('URL:', url, 'Text:', text);
     setShowPasteModal(false);
-    // Handle the submitted data here
+    
+    // If a YouTube URL is provided, show the quiz
+    if (url && url.includes('youtube.com') || url.includes('youtu.be')) {
+      setCurrentVideoUrl(url);
+      setShowQuiz(true);
+    }
+    // Handle other types of content here
+  };
+
+  const handleQuizClose = () => {
+    setShowQuiz(false);
+    setCurrentVideoUrl('');
   };
 
   return (
@@ -187,6 +201,14 @@ const LearningPage = () => {
         <PasteModal
           onClose={handleModalClose}
           onSubmit={handleModalSubmit}
+        />
+      )}
+
+      {/* Dynamic Quiz */}
+      {showQuiz && (
+        <DynamicQuiz
+          videoUrl={currentVideoUrl}
+          onClose={handleQuizClose}
         />
       )}
     </div>
